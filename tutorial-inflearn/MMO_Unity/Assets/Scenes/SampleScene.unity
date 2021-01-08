@@ -295,7 +295,7 @@ GameObject:
   - component: {fileID: 846248951}
   - component: {fileID: 846248950}
   - component: {fileID: 846248949}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Plane (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -453,8 +453,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.08876531, y: -0.7127701, z: 0.0918755, w: 0.68966556}
-  m_LocalPosition: {x: 7.7403445, y: 5.819897, z: -7.7526665}
+  m_LocalRotation: {x: 0.20892926, y: -0.29611066, z: 0.06665393, w: 0.92963666}
+  m_LocalPosition: {x: 9.488371, y: 6.8218803, z: -16.312174}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -520,9 +520,9 @@ GameObject:
   - component: {fileID: 1439569522}
   - component: {fileID: 1439569521}
   - component: {fileID: 1439569520}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Monster
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -613,9 +613,9 @@ GameObject:
   - component: {fileID: 1673716455}
   - component: {fileID: 1673716454}
   - component: {fileID: 1673716453}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube2
-  m_TagString: Untagged
+  m_TagString: Monster
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -706,7 +706,7 @@ GameObject:
   - component: {fileID: 1719812405}
   - component: {fileID: 1719812404}
   - component: {fileID: 1719812403}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
