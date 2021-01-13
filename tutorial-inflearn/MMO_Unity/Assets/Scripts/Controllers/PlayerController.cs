@@ -54,7 +54,12 @@ public class PlayerController : MonoBehaviour
         if (W() || A() || S() || D())
         {
             //ex0) move position given direction
-            Vector3 dir = W() ? Vector3.forward : S() ? Vector3.back : A() ? Vector3.left : D() ? Vector3.right : new Vector3(0, 0, 0);
+            Vector3 dir = new Vector3(0,0,0);
+            if (W()) dir += Vector3.forward;
+            if (S()) dir += Vector3.back;
+            if (A()) dir += Vector3.left;
+            if (D()) dir += Vector3.right;
+            dir.Normalize();
             transform.position += dir * Time.deltaTime * _speed;
             //ex1) move position toward direction of looking 
             //Vector3 dir = transform.rotation * Vector3.forward;
