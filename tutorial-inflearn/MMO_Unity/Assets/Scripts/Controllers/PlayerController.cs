@@ -8,12 +8,16 @@ public class PlayerController : MonoBehaviour
     float _speed=0;
     [SerializeField]
     float _rspped=5;
+
+    bool _moveToDst = false;
+    Vector3 _dstPos;
     
     void Start()
     {
         Managers.Input.KeyAction -= OnKeyboard;//if exist, erase first
         Managers.Input.KeyAction += OnKeyboard;
-        Managers.Input.KeyAction += OnKeyboard;
+        Managers.Input.MouseAction -= OnMouseClicked;
+        Managers.Input.MouseAction += OnMouseClicked;
     }
     delegate bool myCheck();
     myCheck W = () => { return Input.GetKey(KeyCode.W); };
@@ -26,7 +30,20 @@ public class PlayerController : MonoBehaviour
     // PlayerController
     void Update()
     {
-
+        if(_moveToDst)
+        {
+            Vector3 dir = _dstPos - transform.position;
+            if(dir.magnitude<0.00001f)//@warning: The solution of the equation oscillates
+            {
+                _moveToDst = false;
+            }
+            else
+            {
+                float moveDist = Mathf.Clamp(_speed * Time.deltaTime, 0, dir.magnitude);
+                transform.position += dir.normalized * moveDist;
+                transform.LookAt(_dstPos);
+            }
+        }
     }
     void OnKeyboard()
     {
@@ -39,42 +56,39 @@ public class PlayerController : MonoBehaviour
 
         //ex) Ratate euler angle
         //transform.Rotate(new Vector3(0.0f, Time.deltaTime * _speed, 0.0f));
-        var mix = Time.deltaTime * _rspped;
-
-        //ex) 
-        if (W())
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.forward), mix);
-        if (S())
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.back), mix);
-        if (A())
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.left), mix);
-        if (D())
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.right), mix);
-
-        if (W() || A() || S() || D())
+        if(W()| S()| A()| D()) 
         {
-            //ex0) move position given direction
-            Vector3 dir = new Vector3(0,0,0);
+            var mix = Time.deltaTime * _rspped;
+            Vector3 dir = new Vector3(0, 0, 0);
             if (W()) dir += Vector3.forward;
             if (S()) dir += Vector3.back;
             if (A()) dir += Vector3.left;
             if (D()) dir += Vector3.right;
             dir.Normalize();
-            transform.position += dir * Time.deltaTime * _speed;
-            //ex1) move position toward direction of looking 
-            //Vector3 dir = transform.rotation * Vector3.forward;
-            //transform.position += dir * Time.deltaTime * _speed;
-            //ex2) move position toward direction of looking (translate)
-            //transform.Translate(Vector3.forward * Time.deltaTime * _speed);//Translation multiply after Rotation (T*R*pos), so Translate to the forward direction, it goes that direction
-        }
 
-        //if (Input.GetKey(KeyCode.W))
-        //    transform.Translate(Vector3.forward   * Time.deltaTime * _speed);
-        //if (Input.GetKey(KeyCode.S))
-        //    transform.Translate(Vector3.back      * Time.deltaTime * _speed);
-        //if (Input.GetKey(KeyCode.A))
-        //    transform.Translate(Vector3.left      * Time.deltaTime * _speed);
-        //if (Input.GetKey(KeyCode.D))
-        //    transform.Translate(Vector3.right     * Time.deltaTime * _speed);
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), mix);
+            transform.position += dir * Time.deltaTime * _speed;
+            _moveToDst = false;
+        }
+        //    //ex1) move position toward direction of looking 
+        //    //Vector3 dir = transform.rotation * Vector3.forward;
+        //    //transform.position += dir * Time.deltaTime * _speed;
+        //    //ex2) move position toward direction of looking (translate)
+        //    //transform.Translate(Vector3.forward * Time.deltaTime * _speed);//Translation multiply after Rotation (T*R*pos), so Translate to the forward direction, it goes that direction
+    }
+    void OnMouseClicked(Define.MouseEvent evt)
+    {
+        if (evt != Define.MouseEvent.Click)
+            return;
+        Debug.Log("OnMouseClicked");
+
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Debug.DrawRay(ray.origin, ray.direction * 10, Color.red, 1.0f);
+        if (Physics.Raycast(ray, out hit, 20, LayerMask.GetMask("Wall")))
+        {
+            _dstPos = hit.point;
+            _moveToDst = true;
+        }
     }
 }
