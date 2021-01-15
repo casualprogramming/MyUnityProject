@@ -7,7 +7,7 @@ public class CameraController : MonoBehaviour
     [SerializeField]
     Define.CameraMode _mode = Define.CameraMode.QuaterView;
     [SerializeField]
-    Vector3 _deltas = new Vector3(0.0f, 6.0f, -5.0f);
+    Vector3 _delta = new Vector3(0.0f, 6.0f, -5.0f);
     [SerializeField]
     GameObject _player = null;
     void Start()
@@ -19,14 +19,29 @@ public class CameraController : MonoBehaviour
     {
         if(_mode == Define.CameraMode.QuaterView)
         {
-            transform.position = _player.transform.position + _deltas;
-            transform.LookAt(_player.transform.position);
+            RaycastHit hit;
+            if(Physics.Raycast(_player.transform.position, _delta, out hit,_delta.magnitude, LayerMask.GetMask("Wall")))
+            {
+                float dist = (hit.point - _player.transform.position).magnitude * 0.8f;
+                transform.position = _player.transform.position + dist * _delta.normalized;
+                //ex) camera move smooth
+                //transform.position = Vector3.Slerp(transform.position, _player.transform.position + dist * _delta.normalized, 0.01f);
+            }
+            else
+            {
+                transform.position = _player.transform.position + _delta;
+                transform.LookAt(_player.transform.position);
+                //ex) camera move smooth
+                //transform.position = Vector3.Slerp(transform.position, _player.transform.position + _delta, 0.01f);
+                //Vector3 dir = (_player.transform.position- transform.position).normalized;
+                //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), 10 * Time.deltaTime);
+            }
         }
     }
 
     public void SetQuaterView(Vector3 delta)
     {
         _mode = Define.CameraMode.QuaterView;
-        _deltas = delta;
+        _delta = delta;
     }
 }
