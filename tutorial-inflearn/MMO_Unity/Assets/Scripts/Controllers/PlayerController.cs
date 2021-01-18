@@ -44,6 +44,17 @@ public class PlayerController : MonoBehaviour
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), 10 * Time.deltaTime);
             }
         }
+
+        if(_moveToDst)
+        {
+            Animator anim = GetComponent<Animator>();
+            anim.Play("RUN");
+        }
+        else
+        {
+            Animator anim = GetComponent<Animator>();
+            anim.Play("WAIT");
+        }
     }
     void OnKeyboard()
     {
@@ -70,6 +81,7 @@ public class PlayerController : MonoBehaviour
             transform.position += dir * Time.deltaTime * _speed;
             _moveToDst = false;
         }
+
         //    //ex1) move position toward direction of looking 
         //    //Vector3 dir = transform.rotation * Vector3.forward;
         //    //transform.position += dir * Time.deltaTime * _speed;
@@ -78,8 +90,8 @@ public class PlayerController : MonoBehaviour
     }
     void OnMouseClicked(Define.MouseEvent evt)
     {
-        if (evt != Define.MouseEvent.Click)
-            return;
+        //if (evt != Define.MouseEvent.Click)
+        //    return;
         Debug.Log("OnMouseClicked");
 
         RaycastHit hit;
