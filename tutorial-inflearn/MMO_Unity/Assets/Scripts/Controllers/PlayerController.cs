@@ -24,7 +24,8 @@ public class PlayerController : MonoBehaviour
     myCheck S = () => { return Input.GetKey(KeyCode.S); };
     myCheck A = () => { return Input.GetKey(KeyCode.A); };
     myCheck D = () => { return Input.GetKey(KeyCode.D); };
-    
+
+    float wait_run_ratio = 0.0f;
     //GameObject (Player)
     // Transform
     // PlayerController
@@ -47,13 +48,17 @@ public class PlayerController : MonoBehaviour
 
         if(_moveToDst)
         {
+            wait_run_ratio = Mathf.Lerp(wait_run_ratio, 1, 10*Time.deltaTime);
             Animator anim = GetComponent<Animator>();
-            anim.Play("RUN");
+            anim.SetFloat("wait_run_ratio", wait_run_ratio);
+            anim.Play("WAIT_RUN");
         }
         else
         {
+            wait_run_ratio = Mathf.Lerp(wait_run_ratio, 0, 10 * Time.deltaTime);
             Animator anim = GetComponent<Animator>();
-            anim.Play("WAIT");
+            anim.SetFloat("wait_run_ratio", wait_run_ratio);
+            anim.Play("WAIT_RUN");
         }
     }
     void OnKeyboard()
