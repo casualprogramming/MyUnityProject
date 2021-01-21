@@ -6,16 +6,21 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField]
     float _speed=0;
-    [SerializeField]
-    float _rspped=5;
 
-    bool _moveToDst = false;
     Vector3 _dstPos;
-    
+ 
+    public enum PlayerState
+    {
+        Die,
+        Moving,
+        Idle,
+        Channeling,
+        Jumping,
+        Falling,
+    }
+
     void Start()
     {
-        Managers.Input.KeyAction -= OnKeyboard;//if exist, erase first
-        Managers.Input.KeyAction += OnKeyboard;
         Managers.Input.MouseAction -= OnMouseClicked;
         Managers.Input.MouseAction += OnMouseClicked;
     }
@@ -26,86 +31,67 @@ public class PlayerController : MonoBehaviour
     myCheck D = () => { return Input.GetKey(KeyCode.D); };
 
     float wait_run_ratio = 0.0f;
-    //GameObject (Player)
-    // Transform
-    // PlayerController
-    void Update()
-    {
-        if(_moveToDst)
-        {
-            Vector3 dir = _dstPos - transform.position;
-            if(dir.magnitude<0.00001f)//@warning: The solution of the equation oscillates
-            {
-                _moveToDst = false;
-            }
-            else
-            {
-                float moveDist = Mathf.Clamp(_speed * Time.deltaTime, 0, dir.magnitude);
-                transform.position += dir.normalized * moveDist;
-                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), 10 * Time.deltaTime);
-            }
-        }
 
-        if(_moveToDst)
+    PlayerState _state = PlayerState.Idle;
+    void UpdateDie()
+    { }
+    void UpdateMoving()
+    {
+        Vector3 dir = _dstPos - transform.position;
+        if (dir.magnitude < 0.00001f)//@warning: The solution of the equation oscillates
         {
-            wait_run_ratio = Mathf.Lerp(wait_run_ratio, 1, 10*Time.deltaTime);
-            Animator anim = GetComponent<Animator>();
-            anim.SetFloat("wait_run_ratio", wait_run_ratio);
-            anim.Play("WAIT_RUN");
+            _state = PlayerState.Idle;
         }
         else
         {
-            wait_run_ratio = Mathf.Lerp(wait_run_ratio, 0, 10 * Time.deltaTime);
-            Animator anim = GetComponent<Animator>();
-            anim.SetFloat("wait_run_ratio", wait_run_ratio);
-            anim.Play("WAIT_RUN");
+            float moveDist = Mathf.Clamp(_speed * Time.deltaTime, 0, dir.magnitude);
+            transform.position += dir.normalized * moveDist;
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), 10 * Time.deltaTime);
         }
+
+        //animation
+        wait_run_ratio = Mathf.Lerp(wait_run_ratio, 1, 10 * Time.deltaTime);
+        Animator anim = GetComponent<Animator>();
+        anim.SetFloat("wait_run_ratio", wait_run_ratio);
+        anim.Play("WAIT_RUN");
     }
-    void OnKeyboard()
+
+    void UpdateIdle()
     {
-        // transform : transform of attatched GameObject
-        // .TransformDirection : Local -> World
-        // .normalize, .magnitude
-
-        //transform.eulerAngles = new Vector3(0.0f, _yAngle, 0.0f);//automatic 360 clamp with c# set method
-        //The value related to rotate is defined as only one quaternion, and the get set method of eulerAngles changes that value. (maybe)
-
-        //ex) Ratate euler angle
-        //transform.Rotate(new Vector3(0.0f, Time.deltaTime * _speed, 0.0f));
-        if(W()| S()| A()| D()) 
+        wait_run_ratio = Mathf.Lerp(wait_run_ratio, 0, 10 * Time.deltaTime);
+        Animator anim = GetComponent<Animator>();
+        anim.SetFloat("wait_run_ratio", wait_run_ratio);
+        anim.Play("WAIT_RUN");
+    }
+    void Update()
+    {
+        switch(_state)
         {
-            var mix = Time.deltaTime * _rspped;
-            Vector3 dir = new Vector3(0, 0, 0);
-            if (W()) dir += Vector3.forward;
-            if (S()) dir += Vector3.back;
-            if (A()) dir += Vector3.left;
-            if (D()) dir += Vector3.right;
-            dir.Normalize();
-
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), mix);
-            transform.position += dir * Time.deltaTime * _speed;
-            _moveToDst = false;
+            case PlayerState.Die:
+                UpdateDie();
+                break;
+            case PlayerState.Moving:
+                UpdateMoving();
+                break;
+            case PlayerState.Idle:
+                UpdateIdle();
+                break;
         }
 
-        //    //ex1) move position toward direction of looking 
-        //    //Vector3 dir = transform.rotation * Vector3.forward;
-        //    //transform.position += dir * Time.deltaTime * _speed;
-        //    //ex2) move position toward direction of looking (translate)
-        //    //transform.Translate(Vector3.forward * Time.deltaTime * _speed);//Translation multiply after Rotation (T*R*pos), so Translate to the forward direction, it goes that direction
     }
+    
     void OnMouseClicked(Define.MouseEvent evt)
     {
-        //if (evt != Define.MouseEvent.Click)
-        //    return;
-        Debug.Log("OnMouseClicked");
+        if (_state == PlayerState.Die)
+            return;
 
-        RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         Debug.DrawRay(ray.origin, ray.direction * 10, Color.red, 1.0f);
+        RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 20, LayerMask.GetMask("Wall")))
         {
             _dstPos = hit.point;
-            _moveToDst = true;
+            _state = PlayerState.Moving;
         }
     }
 }
