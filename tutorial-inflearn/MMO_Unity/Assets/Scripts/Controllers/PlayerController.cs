@@ -30,11 +30,11 @@ public class PlayerController : MonoBehaviour
     myCheck A = () => { return Input.GetKey(KeyCode.A); };
     myCheck D = () => { return Input.GetKey(KeyCode.D); };
 
-    float wait_run_ratio = 0.0f;
 
     PlayerState _state = PlayerState.Idle;
     void UpdateDie()
-    { }
+    {
+    }
     void UpdateMoving()
     {
         Vector3 dir = _dstPos - transform.position;
@@ -50,18 +50,14 @@ public class PlayerController : MonoBehaviour
         }
 
         //animation
-        wait_run_ratio = Mathf.Lerp(wait_run_ratio, 1, 10 * Time.deltaTime);
         Animator anim = GetComponent<Animator>();
-        anim.SetFloat("wait_run_ratio", wait_run_ratio);
-        anim.Play("WAIT_RUN");
+        anim.SetFloat("speed",_speed);
     }
 
     void UpdateIdle()
     {
-        wait_run_ratio = Mathf.Lerp(wait_run_ratio, 0, 10 * Time.deltaTime);
         Animator anim = GetComponent<Animator>();
-        anim.SetFloat("wait_run_ratio", wait_run_ratio);
-        anim.Play("WAIT_RUN");
+        anim.SetFloat("speed", 0);
     }
     void Update()
     {
