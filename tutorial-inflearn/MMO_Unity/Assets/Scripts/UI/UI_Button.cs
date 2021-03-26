@@ -7,8 +7,6 @@ using UnityEngine.UI;
 
 public class UI_Button : UI_Base
 {
-    [SerializeField]
-    Text _text;
 
     //in this case, enum is used for unique id not for type
     enum Buttons
@@ -35,16 +33,20 @@ public class UI_Button : UI_Base
         Bind<Text>(typeof(Texts));
         Bind<GameObject>(typeof(GameObjects));
         Bind<Image>(typeof(Images));
-        Get<Text>((int)Texts.PointText).text="Bind Test";
+       
+
+        GetButton((int)Buttons.PointButton).gameObject.AddUIEvent(OnButtonClicked);
         GameObject go = GetImage((int)Images.ItemIcon).gameObject;
-        UI_EventHandler evt = go.GetComponent<UI_EventHandler>();
-        evt.OnDragHandler += ((PointerEventData data) =>{go.transform.position = data.position;});
+        AddUIEvent(go, (PointerEventData data) => { go.transform.position = data.position; },Define.UIEvent.Drag);
     }
 
     int _score =0;
-    public void OnButtonClicked()
+    public void OnButtonClicked(PointerEventData eventData)
     {
         _score++;
-        _text.text= $"점수 : {_score}";
+        Get<Text>((int)Texts.ScoreText).text = $"점수 : {_score}";
+        /* @ Before
+         * _text.text= $"점수 : {_score}"; and connect ScoreText variable in unity
+         */
     }
 }
