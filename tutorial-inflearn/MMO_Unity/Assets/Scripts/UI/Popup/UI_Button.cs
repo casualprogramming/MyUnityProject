@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UI_Button : UI_Base
+public class UI_Button : UI_Popup
 {
 
     //in this case, enum is used for unique id not for type
@@ -46,7 +46,7 @@ public class UI_Button : UI_Base
         _score++;
         Get<Text>((int)Texts.ScoreText).text = $"점수 : {_score}";
         /* @ Before
-         * _text.text= $"점수 : {_score}"; and connect ScoreText variable in unity
+         * _text.text= $"점수 : {_score}"; and connect ScoreText to '_text' variable in unity
          */
     }
 }

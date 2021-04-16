@@ -25,17 +25,16 @@ public class Managers : MonoBehaviour
     }
     InputManager input = new InputManager();
     ResourceManager _resource = new ResourceManager();
+    UIManager _ui = new UIManager();
     public static InputManager Input { get { return instance.input; } }
     public static ResourceManager Resource { get { return instance._resource; } }
+    public static UIManager UI { get { return instance._ui; } }
 
-
-    // Start is called before the first frame update
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update()
     {
         input.OnUpdate();

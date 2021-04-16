@@ -23,6 +23,10 @@ public class PlayerController : MonoBehaviour
     {
         Managers.Input.MouseAction -= OnMouseClicked;
         Managers.Input.MouseAction += OnMouseClicked;
+
+        UI_Button ui = Managers.UI.ShowPopupUI<UI_Button>();
+        
+        Managers.UI.ClosePopupUI(ui);
     }
     delegate bool myCheck();
     myCheck W = () => { return Input.GetKey(KeyCode.W); };
