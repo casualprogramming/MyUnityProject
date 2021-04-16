@@ -26,7 +26,6 @@ public class PlayerController : MonoBehaviour
 
         UI_Button ui = Managers.UI.ShowPopupUI<UI_Button>();
         
-        Managers.UI.ClosePopupUI(ui);
     }
     delegate bool myCheck();
     myCheck W = () => { return Input.GetKey(KeyCode.W); };
