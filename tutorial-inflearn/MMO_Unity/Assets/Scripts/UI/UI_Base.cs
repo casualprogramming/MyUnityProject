@@ -5,14 +5,17 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UI_Base : MonoBehaviour
+public abstract class UI_Base : MonoBehaviour
 {
     Dictionary<Type, UnityEngine.Object[]> _objects = new Dictionary<Type, UnityEngine.Object[]>();//for reflection
+
+    public abstract void init();
 
     //[reflection] find child <declared at enum(Type)>
     protected void Bind<T>(Type type) where T : UnityEngine.Object
     {
         string[] names = Enum.GetNames(type);
+        
         UnityEngine.Object[] objects = new UnityEngine.Object[names.Length];
         _objects.Add(typeof(T), objects);
 
