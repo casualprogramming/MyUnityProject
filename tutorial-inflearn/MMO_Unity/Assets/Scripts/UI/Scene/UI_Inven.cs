@@ -26,11 +26,9 @@ public class UI_Inven : UI_Scene
         const int invCount = 8;
         for(int i=0;i< invCount; i++)
         {
-            GameObject item = Managers.Resource.Instantiate("UI/Scene/UI_Inven_Item");
-            item.transform.SetParent(gridPannel.transform);
-
-            UI_Inven_Item invenItem = Util.GetOrAddComponent<UI_Inven_Item>(item);
-            invenItem.SetInfo($"집행검{i}번");//called before start() has been called yet
+            GameObject item = Managers.UI.MakeSubItem<UI_Inven_Item>(parent: gridPannel.transform).gameObject;
+            UI_Inven_Item invenItem = item.GetOrAddComponent<UI_Inven_Item>();
+            invenItem.SetInfo($"집행검{i}번");//called before UI_Inven_Item.start() has been called yet
         }
     }
     // Update is called once per frame
