@@ -10,10 +10,6 @@ public class CameraController : MonoBehaviour
     Vector3 _delta = new Vector3(0.0f, 6.0f, -5.0f);
     [SerializeField]
     GameObject _player = null;
-    void Start()
-    {
-        
-    }
 
     void LateUpdate()//Ensure that this function runs after player controller update
     {

@@ -30,11 +30,6 @@ public class Managers : MonoBehaviour
     public static ResourceManager Resource { get { return instance._resource; } }
     public static UIManager UI { get { return instance._ui; } }
 
-    void Start()
-    {
-        
-    }
-
     void Update()
     {
         input.OnUpdate();
