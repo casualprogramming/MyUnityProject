@@ -5,9 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class LoginScene : BaseScene
 {
-    public override void Clear()
-    {
-    }
     protected override void init()
     {
         base.init();
@@ -17,8 +14,11 @@ public class LoginScene : BaseScene
     {
         if(Input.GetKeyDown(KeyCode.Q))
         {
-            //SceneManager.LoadScene("Game");
-            SceneManager.LoadSceneAsync("Game");
+            Managers.Scene.LoadScene(Define.Scene.Game);
         }
+    }
+    public override void Clear()
+    {
+        Debug.Log("LoginScene Clear!");
     }
 }
