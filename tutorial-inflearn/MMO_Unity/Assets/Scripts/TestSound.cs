@@ -19,10 +19,13 @@ public class TestSound : MonoBehaviour
     public AudioClip audioClip2;
     private void OnTriggerEnter(Collider other)
     {
-        AudioSource audio = GameObject.Find("UnityChan").GetComponent<AudioSource>();
+        //AudioSource audio = GameObject.Find("UnityChan").GetComponent<AudioSource>();
         //AudioSource audio = GetComponent<AudioSource>();
-        audio.PlayOneShot(audioClip);
-        audio.PlayOneShot(audioClip2);
-        GameObject.Destroy(gameObject);
+        //audio.PlayOneShot(audioClip);
+        //audio.PlayOneShot(audioClip2);
+        //GameObject.Destroy(gameObject);
+
+        Managers.Sound.Play(Define.Sound.Effect, "UnityChan/univ0001");
+        Managers.Sound.Play(Define.Sound.Effect, "UnityChan/univ0002");
     }
 }

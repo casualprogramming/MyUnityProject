@@ -5,24 +5,8 @@ using UnityEngine;
 public class Managers : MonoBehaviour
 {
     static Managers s_instance = null;
-    static Managers instance 
-    {
-        get
-        {
-            if (!s_instance)
-            {
-                GameObject mgr = GameObject.Find("@Managers");
-                if (!mgr)
-                {
-                    mgr = new GameObject { name = "@Managers" };
-                    mgr.AddComponent<Managers>();
-                }
-                DontDestroyOnLoad(mgr);
-                s_instance = mgr.GetComponent<Managers>();
-            }
-            return s_instance;
-        }
-    }
+    static Managers instance {get{ init();return s_instance;}}
+
     InputManager input = new InputManager();
     ResourceManager _resource = new ResourceManager();
     SceneManagerEx _scene = new SceneManagerEx();
@@ -39,4 +23,20 @@ public class Managers : MonoBehaviour
         input.OnUpdate();
     }
 
+    static void init()
+    {
+        if (!s_instance)
+        {
+            GameObject mgr = GameObject.Find("@Managers");
+            if (!mgr)
+            {
+                mgr = new GameObject { name = "@Managers" };
+                mgr.AddComponent<Managers>();
+            }
+            DontDestroyOnLoad(mgr);
+            s_instance = mgr.GetComponent<Managers>();
+
+            s_instance._sound.init();
+        }
+    }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ResourceManager
 {
-    private T Load<T> (string path) where T : Object
+    public T Load<T> (string path) where T : Object
     {
         return Resources.Load<T>(path);
     }
