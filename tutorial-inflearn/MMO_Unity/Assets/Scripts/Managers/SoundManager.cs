@@ -8,7 +8,7 @@ public class SoundManager
     //MP3 Music -> AudioClip
     //audience -> AudioListener
     AudioSource[] _audioSources = new AudioSource[(int)Define.Sound.MaxCount];
-
+    Dictionary<string, AudioClip> _audioClips = new Dictionary<string, AudioClip>();
     public void init()
     {
         GameObject root = GameObject.Find("@Sound");
@@ -28,25 +28,40 @@ public class SoundManager
 
         _audioSources[(int)Define.Sound.Bgm].loop = true;
     }
-
-    public void Play(Define.Sound type, string path, float pitch = 1.0f)
+    public void Clear()
+    {
+        foreach(AudioSource audioSource in _audioSources)
+        {
+            audioSource.clip=null;
+            audioSource.Stop();
+        }
+        _audioClips.Clear();
+    }
+    public void Play(string path, Define.Sound type = Define.Sound.Effect, float pitch = 1.0f)
     {
         if(path.Contains("Sounds/") == false)
             path = $"Sounds/{path}";
 
-        if(type == Define.Sound.Bgm)
+        if (type == Define.Sound.Bgm)
         {
             AudioClip audioClip = Managers.Resource.Load<AudioClip>(path);
-            if(audioClip == null)
+            if (audioClip == null)
             {
                 Debug.Log($"AudioClip Missing ! {path}");
                 return;
             }
-            //TODO
+
+            AudioSource audioSource = _audioSources[(int)Define.Sound.Bgm];
+            if(audioSource.isPlaying)
+                audioSource.Stop();
+
+            audioSource.pitch = pitch;
+            audioSource.clip = audioClip;
+            audioSource.Play();
         }
         else
         {
-            AudioClip audioClip = Managers.Resource.Load<AudioClip>(path);
+            AudioClip audioClip = GetOrAddAudioClip(path);//caching
             if (audioClip == null)
             {
                 Debug.Log($"AudioClip Missing ! {path}");
@@ -56,5 +71,16 @@ public class SoundManager
             audioSource.pitch = pitch;
             audioSource.PlayOneShot(audioClip);
         }
+    }
+
+    AudioClip GetOrAddAudioClip(string path)
+    {
+        AudioClip audioClip = null;
+        if(_audioClips.TryGetValue(path, out audioClip) == false)
+        {
+            audioClip = Managers.Resource.Load<AudioClip>(path);
+            _audioClips.Add(path, audioClip);
+        }
+        return audioClip;
     }
 }
